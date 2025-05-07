@@ -1,0 +1,62 @@
+import re
+
+def clean_track_name(name):
+    """
+    Clean track name by removing parentheses content and anything after ' - '.
+    """
+    if pd.isnull(name):
+        return name
+    # Remove text inside parentheses
+    name = re.sub(r'\s*\([^)]*\)', '', name)
+    # Remove text after a dash, like " - Remastered"
+    name = re.split(r'\s*-\s*', name)[0]
+    return name.strip()
+import pandas as pd
+import json
+
+def load_streaming_data(file_paths):
+    """
+    Load and combine streaming history data from multiple JSON files into a single DataFrame.
+
+    Args:
+        file_paths (list): List of file paths to the JSON files.
+
+    Returns:
+        pd.DataFrame: Combined DataFrame containing all streaming events.
+    """
+    all_data = []
+
+    for path in file_paths:
+        with open(path, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+            all_data.extend(data)
+
+    df = pd.DataFrame(all_data)
+    return df
+
+def clean_data(df):
+    """
+    Select essential columns for analysis:
+    track name, artist, album, timestamp, and duration.
+
+    Args:
+        df (pd.DataFrame): Full streaming history DataFrame.
+
+    Returns:
+        pd.DataFrame: Cleaned DataFrame with selected columns only.
+    """
+    essential_columns = [
+        "master_metadata_track_name",
+        "master_metadata_album_artist_name",
+        "master_metadata_album_album_name",
+        "ts",
+        "ms_played"
+    ]
+    # Keep only columns that exist in the dataset
+    columns_to_keep = [col for col in essential_columns if col in df.columns]
+    df_clean = df[columns_to_keep].copy()
+
+    # Clean track names for analysis
+    if "master_metadata_track_name" in df_clean.columns:
+        df_clean['master_metadata_track_name'] = df_clean['master_metadata_track_name'].apply(clean_track_name)
+    return df_clean
