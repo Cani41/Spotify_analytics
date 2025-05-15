@@ -6,6 +6,7 @@ import zipfile
 import os
 import tempfile
 from src.data_loader import load_streaming_data, clean_data
+from src.analyzer import get_top_artists, get_top_tracks, get_top_albums
 
 # Main start screen window
 class StartScreen(ctk.CTk):
@@ -48,6 +49,18 @@ class StartScreen(ctk.CTk):
                                   corner_radius=20)
         self.start_button.pack(pady=(110, 10))
 
+        # Add Settings button
+        self.settings_button = ctk.CTkButton(master=self.frame,
+                                  text="Settings",
+                                  command=self.on_settings,
+                                  fg_color="#535353",
+                                  hover_color="#3c3c3c",
+                                  font=("Helvetica", 16),
+                                  height=40,
+                                  width=100,
+                                  corner_radius=20)
+        self.settings_button.pack(pady=(10, 10))
+
         # Add 'Made by' footer label
         self.made_by_label = ctk.CTkLabel(master=self.frame,
                                           text="Made by\nSanteri Kananen",
@@ -57,6 +70,10 @@ class StartScreen(ctk.CTk):
     def on_start(self):
         self.withdraw()
         self.new_window = FileSelectionWindow(parent=self)
+
+    def on_settings(self):
+        self.withdraw()
+        self.new_window = SettingsWindow(parent=self)
 
 
 # Window for selecting Spotify data ZIP file
@@ -165,10 +182,11 @@ class LoadSuccessWindow(ctk.CTkToplevel):
         self.analyze_button.pack(pady=10)
 
     def on_analyze(self):
-        print("Analyze button clicked.")
         self.destroy()
         self.analysis_window = AnalysisWindow(self.df_clean)
 
+
+# Analyze window
 class AnalysisWindow(ctk.CTkToplevel):
     def __init__(self, df_clean):
         super().__init__()
@@ -177,14 +195,10 @@ class AnalysisWindow(ctk.CTkToplevel):
         self.geometry("800x400")
         self.configure(fg_color="#191414")
 
-        # Add track_artist and album_artist columns
-        df_clean['track_artist'] = df_clean['master_metadata_track_name'] + " - " + df_clean['master_metadata_album_artist_name']
-        df_clean['album_artist'] = df_clean['master_metadata_album_album_name'] + " - " + df_clean['master_metadata_album_artist_name']
-
-        # Analyze data
-        top_artists = df_clean['master_metadata_album_artist_name'].value_counts().head(30)
-        top_tracks = df_clean['track_artist'].value_counts().head(30)
-        top_albums = df_clean['album_artist'].value_counts().head(30)
+        # Analyze data using analyzer module
+        top_artists = get_top_artists(df_clean, n=5)
+        top_tracks = get_top_tracks(df_clean, n=5)
+        top_albums = get_top_albums(df_clean, n=5)
 
         # Create a frame to hold top lists side by side
         self.list_frame = ctk.CTkFrame(master=self, fg_color="#191414")
@@ -210,3 +224,36 @@ class AnalysisWindow(ctk.CTkToplevel):
         ])
         self.album_label = ctk.CTkLabel(master=self.list_frame, text=album_text, font=("Helvetica", 16), text_color="#dce8e1", justify="left")
         self.album_label.pack(side="left", expand=True, padx=10)
+
+class SettingsWindow(ctk.CTkToplevel):
+    def __init__(self, parent):
+        super().__init__()
+        self.parent = parent
+
+        self.title("Settings")
+        self.geometry("400x300")
+        self.configure(fg_color="#191414")
+        self.protocol("WM_DELETE_WINDOW", self.on_close)
+
+        # Header label
+        self.label = ctk.CTkLabel(master=self,
+                                  text="Settings (Coming Soon)",
+                                  font=("Helvetica", 20),
+                                  text_color="#dce8e1")
+        self.label.pack(pady=(50, 20))
+
+        # Back button
+        self.back_button = ctk.CTkButton(master=self,
+                                         text="Back",
+                                         command=self.on_close,
+                                         fg_color="#535353",
+                                         hover_color="#3c3c3c",
+                                         font=("Helvetica", 16),
+                                         height=40,
+                                         width=100,
+                                         corner_radius=20)
+        self.back_button.pack(pady=20)
+
+    def on_close(self):
+        self.destroy()
+        self.parent.deiconify()

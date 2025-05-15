@@ -1,7 +1,7 @@
 # main.py
-from src.ui import StartScreen
 
 def main():
+    from src.ui import StartScreen
     app = StartScreen()
     app.mainloop()
 
