@@ -1,4 +1,16 @@
+# -----------------------------------------------------------
+# File name: data_loader.py
+# Author: Santeri Kananen
+# GitHub: https://github.com/Cani41
+# Email: santerikananen@gmail.com
+# Created: 01/05/2025
+# Description: Functions for loading and cleaning Spotify streaming data
+# -----------------------------------------------------------
+import json
 import re
+
+import pandas as pd
+
 
 def clean_track_name(name):
     """
@@ -11,8 +23,6 @@ def clean_track_name(name):
     # Remove text after a dash, like " - Remastered"
     name = re.split(r'\s*-\s*', name)[0]
     return name.strip()
-import pandas as pd
-import json
 
 def load_streaming_data(file_paths):
     """
@@ -59,4 +69,9 @@ def clean_data(df):
     # Clean track names for analysis
     if "master_metadata_track_name" in df_clean.columns:
         df_clean['master_metadata_track_name'] = df_clean['master_metadata_track_name'].apply(clean_track_name)
+
+    # Convert timestamp once so downstream analytics don't repeat the parse
+    if "ts" in df_clean.columns:
+        df_clean['ts'] = pd.to_datetime(df_clean['ts'], utc=True)
+
     return df_clean

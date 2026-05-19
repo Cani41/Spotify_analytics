@@ -10,3 +10,6 @@ env/
 .vscode/
 .idea/
 *.code-workspace
+
+# Personal Spotify listening data — do not commit
+data/
