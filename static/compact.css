@@ -1,0 +1,135 @@
+/* ================================================================
+ * Compact view overrides
+ * Loaded conditionally when the Compact view toggle is on.
+ * ================================================================ */
+
+/* Drop the atmospheric radial gradients — flat background for dashboard feel */
+[data-testid="stAppViewContainer"] {
+  background: var(--bg-base) !important;
+}
+
+/* Hide the grain texture overlay */
+[data-testid="stAppViewContainer"]::before {
+  display: none !important;
+}
+
+/* Tighten Streamlit's internal spacing between widgets/blocks */
+[data-testid="stVerticalBlock"] {
+  gap: 0.45rem !important;
+}
+[data-testid="stHorizontalBlock"] {
+  gap: 0.6rem !important;
+}
+
+/* Generous padding under the last top-list item so stats aren't flush to the page edge */
+.top-item:last-child {
+  padding-bottom: 20px !important;
+}
+
+/* Breathing room before the expanders — replaces the removed section-rule margin */
+details[data-testid="stExpander"] {
+  margin-top: 2rem !important;
+}
+details[data-testid="stExpander"] + details[data-testid="stExpander"] {
+  margin-top: 0 !important;
+}
+
+/* Shrink the main content top padding, keep ample bottom so last item breathes */
+[data-testid="stMain"] .block-container,
+.stMainBlockContainer {
+  padding-top: 1.5rem !important;
+  padding-bottom: 3rem !important;
+}
+
+/* Tighten expander internal padding when open */
+details[data-testid="stExpander"] [data-testid="stExpanderDetails"] {
+  padding-top: 0.4rem !important;
+  padding-bottom: 0.4rem !important;
+}
+
+/* Headers */
+[data-testid="stMain"] h1 {
+  font-size: 2.4rem !important;
+  margin-bottom: 0.2rem !important;
+}
+[data-testid="stMain"] h3 {
+  font-size: 0.82rem !important;
+  margin-bottom: 0.7rem !important;
+}
+
+/* Analytics eyebrow */
+.analytics-eyebrow {
+  font-size: 0.62rem;
+  letter-spacing: 0.24em;
+  margin-bottom: 4px;
+}
+
+/* Hero metric */
+.hero-metric {
+  padding: 12px 16px 14px;
+}
+.hero-metric-label {
+  font-size: 0.6rem;
+  letter-spacing: 0.14em;
+}
+.hero-metric-value {
+  font-size: clamp(2rem, 3.6vw, 2.75rem) !important;
+  margin-top: 8px;
+}
+.hero-metric-meta {
+  font-size: 0.62rem;
+  margin-top: 4px;
+}
+
+/* Satellite metrics */
+[data-testid="stMetric"] {
+  padding: 12px 14px;
+}
+[data-testid="stMetricLabel"] p {
+  font-size: 0.6rem !important;
+  letter-spacing: 0.14em !important;
+}
+[data-testid="stMetricValue"] {
+  font-size: 1.65rem !important;
+}
+[data-testid="stMetricDelta"] {
+  font-size: 0.7rem !important;
+}
+
+/* Section rule */
+.section-rule {
+  margin: 22px 0 12px;
+  font-size: 0.6rem;
+}
+
+/* Top items */
+.top-item {
+  padding: 7px 0;
+  gap: 12px;
+}
+.top-item-rank {
+  font-size: 1.3rem;
+  min-width: 28px;
+}
+.top-item-name {
+  font-size: 0.85rem;
+}
+.top-item-artist {
+  font-size: 0.7rem;
+}
+.top-item-stats {
+  font-size: 0.62rem;
+  margin-top: 4px;
+}
+
+/* Expander summary */
+details[data-testid="stExpander"] summary,
+details[data-testid="stExpander"] summary p {
+  font-size: 0.82rem !important;
+  letter-spacing: 0.16em !important;
+}
+
+/* Caption */
+[data-testid="stCaptionContainer"] p, small {
+  font-size: 0.62rem !important;
+}

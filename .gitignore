@@ -13,3 +13,6 @@ env/
 
 # Personal Spotify listening data — do not commit
 data/
+
+# Locally downloaded Claude skills (tracked via skills-lock.json)
+.agents/

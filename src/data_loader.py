@@ -60,7 +60,8 @@ def clean_data(df):
         "master_metadata_album_artist_name",
         "master_metadata_album_album_name",
         "ts",
-        "ms_played"
+        "ms_played",
+        "reason_end",
     ]
     # Keep only columns that exist in the dataset
     columns_to_keep = [col for col in essential_columns if col in df.columns]
@@ -70,8 +71,12 @@ def clean_data(df):
     if "master_metadata_track_name" in df_clean.columns:
         df_clean['master_metadata_track_name'] = df_clean['master_metadata_track_name'].apply(clean_track_name)
 
-    # Convert timestamp once so downstream analytics don't repeat the parse
+    # Convert timestamp once to local time so downstream analytics
+    # (weekday, hour, day, year) match the user's wall-clock perception.
     if "ts" in df_clean.columns:
-        df_clean['ts'] = pd.to_datetime(df_clean['ts'], utc=True)
+        df_clean['ts'] = (
+            pd.to_datetime(df_clean['ts'], utc=True)
+            .dt.tz_convert('Europe/Helsinki')
+        )
 
     return df_clean

@@ -1,0 +1,473 @@
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+
+/* ================================================================
+ * Design tokens
+ * ================================================================ */
+:root {
+  --accent: #1DB954;
+  --accent-soft: rgba(29, 185, 84, 0.18);
+  --accent-glow: rgba(29, 185, 84, 0.32);
+  --bg-base: #0a0a0a;
+  --bg-elevated: #131313;
+  --bg-card: rgba(255, 255, 255, 0.025);
+  --border-subtle: rgba(255, 255, 255, 0.06);
+  --border-strong: rgba(255, 255, 255, 0.12);
+  --text-primary: #ededed;
+  --text-secondary: #b5b5b5;
+  --text-muted: #6f6f6f;
+  --font-display: 'Manrope', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-body: 'Manrope', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', monospace;
+}
+
+/* Atmospheric base — layered radial gradients in the brand accent */
+[data-testid="stAppViewContainer"] {
+  background:
+    radial-gradient(ellipse 75% 45% at 50% -8%, rgba(29, 185, 84, 0.11), transparent 60%),
+    radial-gradient(ellipse 55% 35% at 95% 110%, rgba(29, 185, 84, 0.06), transparent 60%),
+    var(--bg-base) !important;
+}
+
+/* Grain overlay — subtle texture for depth */
+[data-testid="stAppViewContainer"]::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.45;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg viewBox='0 0 220 220' xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.18 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+
+/* Body typography baseline */
+html, body, .stApp, [data-testid="stAppViewContainer"], [data-testid="stMain"] {
+  font-family: var(--font-body) !important;
+  color: var(--text-primary);
+  letter-spacing: -0.005em;
+}
+
+/* Hide anchor icons next to headers */
+[data-testid="stHeaderActionElements"] { display: none !important; }
+
+
+/* ================================================================
+ * Streamlit element overrides
+ * ================================================================ */
+
+/* Title (st.title) — Spotify-style bold display */
+[data-testid="stMain"] h1 {
+  font-family: var(--font-display) !important;
+  font-weight: 800 !important;
+  font-size: 3.2rem !important;
+  letter-spacing: -0.035em !important;
+  line-height: 1.05 !important;
+  margin-bottom: 0.4rem !important;
+}
+
+/* h3 (st.subheader) — section header */
+[data-testid="stMain"] h3 {
+  color: var(--accent) !important;
+  font-family: var(--font-body) !important;
+  font-size: 1rem !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.18em !important;
+  font-weight: 500 !important;
+  margin-bottom: 1.1rem !important;
+}
+
+/* h5 (st.markdown "#####") — eyebrow style */
+[data-testid="stMain"] h5 {
+  color: var(--accent) !important;
+  font-family: var(--font-body) !important;
+  font-size: 0.72rem !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.2em !important;
+  font-weight: 500 !important;
+}
+
+/* Sidebar header */
+[data-testid="stSidebar"] h2 {
+  color: var(--accent) !important;
+  font-family: var(--font-display) !important;
+  font-weight: 700 !important;
+  font-size: 1.5rem !important;
+  letter-spacing: -0.02em !important;
+}
+
+/* Expander — framed container + uppercase summary */
+details[data-testid="stExpander"] {
+  border: 1px solid var(--border-subtle) !important;
+  border-radius: 4px !important;
+  background: var(--bg-card) !important;
+  transition: border-color 220ms ease;
+}
+details[data-testid="stExpander"]:hover {
+  border-color: var(--accent-soft) !important;
+}
+details[data-testid="stExpander"] summary,
+details[data-testid="stExpander"] summary p {
+  color: var(--accent) !important;
+  font-weight: 500 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.18em !important;
+  font-size: 1rem !important;
+}
+
+/* Metric cards — refined with display-font numbers */
+[data-testid="stMetric"] {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 4px;
+  padding: 18px 20px;
+  transition: border-color 220ms ease, transform 220ms ease;
+}
+[data-testid="stMetric"]:hover {
+  border-color: var(--accent-soft);
+}
+[data-testid="stMetricLabel"] p {
+  text-transform: uppercase !important;
+  letter-spacing: 0.16em !important;
+  font-size: 0.68rem !important;
+  color: var(--text-muted) !important;
+  font-weight: 500 !important;
+}
+[data-testid="stMetricValue"] {
+  font-family: var(--font-display) !important;
+  font-size: 2.2rem !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.03em !important;
+  color: var(--text-primary) !important;
+  line-height: 1.1 !important;
+}
+[data-testid="stMetricDelta"] {
+  font-family: var(--font-body) !important;
+  font-size: 0.78rem !important;
+  color: var(--text-secondary) !important;
+}
+
+/* Bordered container (st.container(border=True)) */
+[data-testid="stMain"] [data-testid="stVerticalBlockBorderWrapper"] {
+  border: 1px solid var(--border-subtle) !important;
+  border-radius: 6px !important;
+  background:
+    linear-gradient(180deg, rgba(29, 185, 84, 0.035), transparent 70%),
+    var(--bg-card) !important;
+}
+
+/* Caption (st.caption) — refined muted */
+[data-testid="stCaptionContainer"] p, small {
+  color: var(--text-muted) !important;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  font-size: 0.7rem !important;
+}
+
+/* Custom loading state — replaces st.spinner for reliable centering */
+@keyframes loadingSpin {
+  to { transform: rotate(360deg); }
+}
+.loading-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 32px 16px;
+  color: var(--text-secondary);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  letter-spacing: 0.01em;
+}
+.loading-spinner {
+  width: 22px;
+  height: 22px;
+  border: 2px solid var(--border-strong);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: loadingSpin 0.8s linear infinite;
+  flex-shrink: 0;
+}
+
+
+/* ================================================================
+ * Custom components — analytics view
+ * ================================================================ */
+
+/* Header eyebrow above the title */
+.analytics-eyebrow {
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  margin: 0 0 6px;
+}
+
+/* Hero metric — dominant "Total listening" block */
+.hero-metric {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 4px;
+  padding: 18px 24px 22px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: border-color 220ms ease;
+}
+.hero-metric:hover { border-color: var(--accent-soft); }
+.hero-metric-label {
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+.hero-metric-value {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(2.75rem, 5vw, 4rem);
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: var(--accent);
+  margin-top: 14px;
+}
+.hero-metric-meta {
+  margin-top: 10px;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+}
+
+/* Section divider — magazine-style hairline */
+.section-rule {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 36px 0 18px;
+  color: var(--text-muted);
+  font-size: 0.66rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+.section-rule::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, var(--border-strong), transparent);
+}
+
+/* Top lists — oversized italic-serif ranks */
+.top-list { margin: 0; }
+.top-item {
+  display: flex;
+  gap: 16px;
+  align-items: baseline;
+  padding: 11px 0;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.top-item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+.top-item:hover .top-item-name { color: var(--accent); }
+.top-item-rank {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.6rem;
+  color: var(--accent);
+  min-width: 32px;
+  line-height: 1;
+  flex-shrink: 0;
+  letter-spacing: -0.03em;
+}
+.top-item-body {
+  flex: 1;
+  min-width: 0;
+}
+.top-item-name {
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 0.95rem;
+  color: var(--text-primary);
+  line-height: 1.3;
+  transition: color 180ms ease;
+}
+.top-item-artist {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+  line-height: 1.3;
+}
+.top-item-stats {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  letter-spacing: 0.08em;
+  margin-top: 6px;
+  text-transform: uppercase;
+}
+
+
+/* ================================================================
+ * Landing page — editorial hero + upload card
+ * ================================================================ */
+
+@keyframes landingFadeUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.landing-hero {
+  text-align: center;
+  padding: 24px 0 20px;
+  width: 100%;
+  animation: landingFadeUp 700ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+.landing-display {
+  font-family: var(--font-display) !important;
+  font-weight: 800 !important;
+  font-size: clamp(2.5rem, 5.5vw, 4rem) !important;
+  line-height: 1 !important;
+  letter-spacing: -0.04em !important;
+  color: var(--accent) !important;
+  margin: 0 !important;
+}
+.landing-rule {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin: 18px auto 14px;
+  max-width: 520px;
+  color: var(--text-muted);
+  font-size: 0.66rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+}
+.landing-rule::before,
+.landing-rule::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border-strong), transparent);
+}
+.landing-rule .dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 12px var(--accent);
+}
+.landing-dek {
+  font-family: var(--font-body);
+  font-weight: 300;
+  font-size: 1.05rem;
+  line-height: 1.55;
+  color: var(--text-secondary);
+  max-width: 520px;
+  margin: 0 auto;
+  text-align: center;
+  text-wrap: balance;
+}
+
+/* Staggered fade-in wrappers for upload-area children */
+.anim-step-1 { animation: landingFadeUp 700ms 180ms cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+.anim-step-2 { animation: landingFadeUp 700ms 320ms cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+.anim-step-3 { animation: landingFadeUp 700ms 460ms cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+
+/* Upload dropzone — card with hover glow */
+[data-testid="stFileUploaderDropzone"] {
+  max-width: 460px !important;
+  margin: 0 auto !important;
+  padding: 32px 24px !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 14px !important;
+  background: linear-gradient(180deg, rgba(29, 185, 84, 0.04), transparent 70%), var(--bg-card) !important;
+  border: 1px solid var(--border-strong) !important;
+  border-radius: 6px !important;
+  transition: border-color 260ms ease, box-shadow 260ms ease, transform 260ms ease !important;
+}
+[data-testid="stFileUploaderDropzone"]:hover {
+  border-color: var(--accent) !important;
+  box-shadow: 0 0 0 1px var(--accent-soft), 0 18px 60px -20px var(--accent-glow) !important;
+}
+[data-testid="stFileUploaderDropzone"] > * {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 12px !important;
+  width: auto !important;
+}
+/* "Browse files" button — pill with green outline */
+[data-testid="stFileUploaderDropzone"] button {
+  border: 1px solid var(--accent) !important;
+  color: var(--accent) !important;
+  background: transparent !important;
+  font-family: var(--font-body) !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.06em !important;
+  text-transform: uppercase !important;
+  font-size: 0.78rem !important;
+  padding: 8px 22px !important;
+  border-radius: 999px !important;
+  transition: background 200ms ease, color 200ms ease !important;
+}
+[data-testid="stFileUploaderDropzone"] button:hover {
+  background: var(--accent) !important;
+  color: #0a0a0a !important;
+}
+
+/* Description above upload */
+.landing-upload-intro {
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 0.92rem;
+  line-height: 1.55;
+  max-width: 460px;
+  margin: 0 auto 16px;
+}
+.landing-upload-intro strong { color: var(--text-primary); font-weight: 500; }
+.landing-upload-intro em { color: var(--accent); font-style: normal; }
+
+/* Footer */
+.landing-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  margin-top: 24px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border-subtle);
+  color: var(--text-muted);
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+.landing-footer a {
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: color 180ms ease;
+}
+.landing-footer a:hover { color: var(--accent); }
+.landing-footer .sep {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--border-strong);
+}
+
+
+/* ================================================================
+ * Z-index layering — keep content above the grain overlay
+ * ================================================================ */
+[data-testid="stMain"], [data-testid="stSidebar"], [data-testid="stHeader"] {
+  position: relative;
+  z-index: 1;
+}
