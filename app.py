@@ -177,6 +177,7 @@ def render_top_list(df_top, title, pad_artist: bool = True):
     in compact mode where height parity matters less than density."""
     st.subheader(title)
     items = []
+    max_hours = float(df_top['hours'].max()) if not df_top.empty else 0.0
     for rank, (_, row) in enumerate(df_top.iterrows(), start=1):
         name = _html.escape(str(row['name']))
         artist = row['artist']
@@ -188,6 +189,7 @@ def render_top_list(df_top, title, pad_artist: bool = True):
             artist_html = ""
         plays = int(row['plays'])
         hours = float(row['hours'])
+        ratio = (hours / max_hours * 100.0) if max_hours > 0 else 0.0
         items.append(
             f"<div class='top-item'>"
             f"<div class='top-item-rank'>{rank}</div>"
@@ -195,6 +197,7 @@ def render_top_list(df_top, title, pad_artist: bool = True):
             f"<div class='top-item-name'>{name}</div>"
             f"{artist_html}"
             f"<div class='top-item-stats'>{plays:,} plays · {hours:,.1f} h</div>"
+            f"<div class='top-item-bar'><div class='top-item-bar-fill' style='width:{ratio:.1f}%'></div></div>"
             f"</div>"
             f"</div>"
         )
@@ -372,16 +375,57 @@ st.markdown(
 )
 st.title("Spotify Analytics")
 
-total_value = (
-    f"{metrics.total_days:,.1f} d" if metrics.total_hours >= 48
-    else f"{metrics.total_hours:,.1f} h"
-)
+if metrics.total_hours >= 100:
+    hero_value = f"{metrics.total_hours:,.0f}"
+elif metrics.total_hours >= 1:
+    hero_value = f"{metrics.total_hours:,.1f}"
+else:
+    hero_value = f"{metrics.total_hours * 60:,.0f}"
 
-c1, c2, c3, c4 = st.columns(4)
-c1.metric("Total listening", total_value)
-c2.metric("Total plays", f"{metrics.total_plays:,}")
-c3.metric("Unique artists", f"{metrics.unique_artists:,}")
-c4.metric("Unique songs", f"{metrics.unique_tracks:,}")
+if metrics.total_hours >= 1:
+    hero_unit = "hours"
+    hero_meta = (
+        f'<span class="hero-meta-strong">{metrics.total_days:,.1f}</span> days of music'
+        if metrics.total_hours >= 48
+        else f'<span class="hero-meta-strong">{metrics.total_hours * 60:,.0f}</span> minutes total'
+    )
+else:
+    hero_unit = "minutes"
+    hero_meta = f'<span class="hero-meta-strong">{metrics.total_plays:,}</span> plays in this range'
+
+hero_col, sat_col = st.columns([2, 1])
+with hero_col:
+    st.markdown(
+        f"""
+        <div class="hero-block">
+          <div class="hero-eyebrow">Total listening</div>
+          <div class="hero-mega">{hero_value}</div>
+          <div class="hero-meta">{hero_unit}<span class="sep"></span>{hero_meta}</div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+with sat_col:
+    st.markdown(
+        f"""
+        <div class="hero-satellites">
+          <div class="hero-satellite">
+            <div class="hero-satellite-value">{metrics.total_plays:,}</div>
+            <div class="hero-satellite-label">Total plays</div>
+          </div>
+          <div class="hero-satellite">
+            <div class="hero-satellite-value">{metrics.unique_artists:,}</div>
+            <div class="hero-satellite-label">Unique artists</div>
+          </div>
+          <div class="hero-satellite">
+            <div class="hero-satellite-value">{metrics.unique_tracks:,}</div>
+            <div class="hero-satellite-label">Unique songs</div>
+          </div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
 
 
 col_a, col_t, col_al, col_d = st.columns([1.1, 1.1, 1.1, 1])
